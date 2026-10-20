@@ -1,6 +1,6 @@
 # Jones Automation Test (Playwright)
 
-This project contains an automated End-to-End (E2E) test for submitting the contact form on `https://test.netlify.app/`.
+This project contains an automated test for submitting the contact form on `https://test.netlify.app/`.
 
 ##  Features
 - **Page Status Check**: Validates that the website loads with HTTP status 200 before continuing.
