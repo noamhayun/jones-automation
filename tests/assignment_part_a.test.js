@@ -1,3 +1,5 @@
+
+
 import { test, expect } from '@playwright/test';
 
 /**
@@ -5,9 +7,16 @@ import { test, expect } from '@playwright/test';
  * Verifies form input filling, screenshot capture, submission, and confirmation message visibility.
  */
 
-test('Jones automation test', async ({ page }) => {
+test('Submit contact form successfully', async ({ page }) => {
   // Navigate to the main landing page
-  await page.goto('https://test.netlify.app/');
+  try {
+    const response = await page.goto('https://test.netlify.app/', { timeout: 10000 });
+    if (response?.status() !== 200) {
+      throw new Error(`Page returned status code ${response?.status()}`);
+    }
+  } catch (error) {
+    throw new Error(`Failed to navigate to website: ${error.message}`);
+  }
 
   // Fill in required contact details
   await page.getByPlaceholder('Your full name').fill('Noam');
@@ -15,19 +24,30 @@ test('Jones automation test', async ({ page }) => {
   await page.getByPlaceholder('Your phone number').fill('0549982631');
   await page.getByPlaceholder('Company name').fill('Jones');
   await page.getByPlaceholder('example.com').fill('https://www.linkedin.com/company/jones1/posts/?feedView=all');
- 
- // Select company size option from the dropdown
-  await page.locator('#employees').selectOption('51-500')
 
-  // Capture a screenshot of the filled form prior to submission
-  await page.screenshot({ path: 'screenshot.png' });
+  // Select company size option from the dropdown
+  await page.locator('#employees').selectOption('51-500');
 
-  // Submit the form
-  await page.getByRole('button', {name: 'Request a call back'}).click()
+ // Get current date and format as YYYY-MM-DD
+  const now = new Date();
+  const date = now.toISOString().split('T')[0]; 
+
+  // Format local time as HH-mm-ss
+  const time = `${String(now.getHours()).padStart(2, '0')}-${String(now.getMinutes()).padStart(2, '0')}-${String(now.getSeconds()).padStart(2, '0')}`;
+  const timestamp = `${date}_${time}`;
+
+  // Capture full page screenshot with timestamped filename    
+  await page.screenshot({ path: `form-filled-${timestamp}.png`, fullPage: true });
+
+  // Submit Form
+  await page.getByRole('button', { name: 'Request a call back' }).click();
 
   // Verify that the success confirmation message is displayed
-  await expect(page.getByText('Thank you')).toBeVisible();
+  try {
+    await expect(page.getByText('Thank you')).toBeVisible({ timeout: 5000 });
+    console.log('Successfully reached the thank you page!');
+  } catch (error) {
   
-  // Log success message to the console
-  console.log('Successfully reached the thank you page!');
+    throw new Error('Test Failed: Form was submitted but "Thank you" confirmation page/message was not displayed.');
+  }
 });
