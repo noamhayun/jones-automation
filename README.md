@@ -6,8 +6,7 @@ This project contains an automated End-to-End (E2E) test for submitting the cont
 - **Page Status Check**: Validates that the website loads with HTTP status 200 before continuing.
 - **Form Filling**: Automatically fills out all mandatory input fields and options.
 - **Timestamped Screenshot**: Captures a screenshot of the filled form prior to submission.
-- **Error Handling**: Uses a `try...catch` block to verify the "Thank You" message and captures a failure screenshot if needed.
-
+- **Error Handling**: Uses a `try...catch` block to verify the "Thank You" message.
 ##  Setup Instructions
 
 ### 1. Install Dependencies
